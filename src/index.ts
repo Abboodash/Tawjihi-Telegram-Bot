@@ -1,19 +1,21 @@
-import config from "./config";
+import dotenv from "dotenv";
+import { keepAlive } from "./server";
 import { Context, Telegraf } from "telegraf";
 import { Update, Message } from "telegraf/typings/core/types/typegram";
 
-const bot = new Telegraf(config.BOT_TOKEN);
+dotenv.config();
+const bot = new Telegraf(process.env.BOT_TOKEN!);
 let targetMsg:
   | (Context<{
-      message: Update.New & Update.NonChannel & Message.PhotoMessage;
-      update_id: number;
-    }> &
-      Omit<Context<Update>, keyof Context<Update>>)
+    message: Update.New & Update.NonChannel & Message.PhotoMessage;
+    update_id: number;
+  }> &
+    Omit<Context<Update>, keyof Context<Update>>)
   | (Context<{
-      message: Update.New & Update.NonChannel & Message.DocumentMessage;
-      update_id: number;
-    }> &
-      Omit<Context<Update>, keyof Context<Update>>)
+    message: Update.New & Update.NonChannel & Message.DocumentMessage;
+    update_id: number;
+  }> &
+    Omit<Context<Update>, keyof Context<Update>>)
   | undefined;
 let botReplyId: number;
 
@@ -64,7 +66,7 @@ bot.action("yes-btn", async (ctx, next) => {
   let msgId: number = await ctx
     .reply(acceptString)
     .then((ctx) => ctx.message_id);
-  setInterval(() => {
+  setTimeout(() => {
     ctx.deleteMessage(msgId);
   }, 10000);
 });
@@ -77,7 +79,7 @@ bot.action("no-btn", async (ctx, next) => {
   let msgId: number = await ctx
     .reply(declineString)
     .then((ctx) => ctx.message_id);
-  setInterval(() => {
+  setTimeout(() => {
     ctx.deleteMessage(msgId);
   }, 10000);
 });
@@ -92,7 +94,7 @@ bot.on("text", (ctx) => {
         let msgId = await ctx
           .reply(declineMsgsForNoneAdminString)
           .then((ctx) => ctx.message_id);
-        setInterval(() => {
+        setTimeout(() => {
           ctx.deleteMessage(msgId);
         }, 10000);
       }
@@ -107,7 +109,7 @@ bot.on("text", (ctx) => {
 bot.on("audio", (ctx) => {
   ctx.deleteMessage(ctx.message.message_id);
   ctx.reply(declineMsgsForNoneAdminString).then((msg) =>
-    setInterval(() => {
+    setTimeout(() => {
       ctx.deleteMessage(msg.message_id);
     }, 10000)
   );
@@ -116,7 +118,7 @@ bot.on("audio", (ctx) => {
 bot.on("video", (ctx) => {
   ctx.deleteMessage(ctx.message.message_id);
   ctx.reply(declineMsgsForNoneAdminString).then((msg) =>
-    setInterval(() => {
+    setTimeout(() => {
       ctx.deleteMessage(msg.message_id);
     }, 10000)
   );
@@ -142,6 +144,6 @@ function isAdmin(
       });
   });
 }
-
 console.log("The Bot is online.");
+keepAlive();
 bot.launch();
