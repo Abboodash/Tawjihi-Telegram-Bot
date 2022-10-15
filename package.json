@@ -1,0 +1,27 @@
+{
+  "name": "TawjihiBot",
+  "version": "1.0.0",
+  "description": "Telegram Bot for the Tawjihi Group",
+  "scripts": {
+    "build": "tsc",
+    "start": "node build/index.js",
+    "dev": "concurrently \"tsc -w\" \"nodemon build/index.js\""
+  },
+  "main": "build/index.js",
+  "author": "Abboodash",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "telegraf": "^4.10.0"
+  },
+  "devDependencies": {
+    "@types/node": "^18.8.5",
+    "concurrently": "^7.4.0",
+    "nodemon": "^2.0.20",
+    "typescript": "^4.8.4"
+  },
+  "engines": {
+    "node": ">=18.7.0"
+  }
+}
